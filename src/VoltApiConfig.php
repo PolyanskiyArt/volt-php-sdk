@@ -4,6 +4,8 @@
 namespace LJJackson\Volt;
 
 
+use JetBrains\PhpStorm\Pure;
+
 class VoltApiConfig
 {
     private string $clientId;

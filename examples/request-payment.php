@@ -24,18 +24,14 @@ $api = new VoltApi($config);
 
 $accessToken = $api->authentication->authenticate();
 
+$payment = $api->payment->requestPayment($accessToken, [
+    'currencyCode' => 'GBP',
+    'amount' => 1000,
+    'type' => 'GOODS',
+    'uniqueReference' => 'TEST' . rand(0, 10000)
+]);
 
-var_dump($api->banks->retrieveAll($accessToken));
-
-//
-//$payment = $api->payment->requestPayment($accessToken, [
-//    'currencyCode' => 'GBP',
-//    'amount' => 1000,
-//    'type' => 'GOODS',
-//    'uniqueReference' => 'TEST' . rand(0, 10000)
-//]);
-//
-//var_dump($payment->getRedirectUri());
+var_dump($payment->getRedirectUri());
 
 
 
