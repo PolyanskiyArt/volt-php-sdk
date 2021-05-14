@@ -42,4 +42,21 @@ class PaymentService extends BaseService
 
         return $request;
     }
+
+    public function retrieveSinglePayment(AccessToken $token, string $id): PaymentRequest
+    {
+        $response = $this->get("payments/{$id}", [
+            RequestOptions::HEADERS => [
+                'Authorization' => 'Bearer ' . $token->getAccessToken(),
+            ],
+        ]);
+
+        $request = new PaymentRequest(json_decode($response->getBody()->getContents(), true));
+
+        if ($this->apiConfig->isSandbox()) {
+            return $request->setSandbox();
+        }
+
+        return $request;
+    }
 }

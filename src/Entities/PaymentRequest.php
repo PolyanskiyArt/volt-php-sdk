@@ -5,6 +5,7 @@ namespace LJJackson\Volt\Entities;
 
 
 use JetBrains\PhpStorm\Pure;
+use LJJackson\Volt\Exceptions\InvalidVoltRequestParameter;
 
 class PaymentRequest
 {
@@ -32,9 +33,15 @@ class PaymentRequest
         $this->status = $data['status'] ?? null;
     }
 
-    public static function fromRedirect(string $request): PaymentRequest
+    public static function fromRedirect(string $voltRequest): PaymentRequest
     {
-        return new self(json_decode(base64_decode($request), true));
+        $result = json_decode(base64_decode($voltRequest), true);
+
+        if ($result === null) {
+            throw new InvalidVoltRequestParameter();
+        }
+
+        return new self($result);
     }
 
     public function getId()
