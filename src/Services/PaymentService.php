@@ -7,6 +7,7 @@ use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\RequestOptions;
 use LJJackson\Volt\Entities\AccessToken;
 use LJJackson\Volt\Entities\PaymentRequest;
+use LJJackson\Volt\Exceptions\InvalidCurrencyException;
 use LJJackson\Volt\Exceptions\PaymentValidationException;
 
 class PaymentService extends BaseService
@@ -29,9 +30,17 @@ class PaymentService extends BaseService
                 RequestOptions::JSON => $data,
             ]);
         } catch (RequestException $exception) {
-            $response = json_decode($exception->getResponse()->getBody()->getContents(), true);
+            if ($exception->getResponse()->getStatusCode() === 400) {
+                $response = json_decode($exception->getResponse()->getBody()->getContents(), true);
+                throw new PaymentValidationException($response['exception']['errorList'], $exception->getResponse()->getStatusCode());
+            }
 
-            throw new PaymentValidationException($response['exception']['errorList'], $exception->getResponse()->getStatusCode());
+            if ($exception->getResponse()->getStatusCode() === 422) {
+                throw new InvalidCurrencyException();
+            }
+
+            throw $exception;
+
         }
 
         $request = new PaymentRequest(json_decode($response->getBody()->getContents(), true));
