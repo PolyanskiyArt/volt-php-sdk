@@ -15,7 +15,7 @@ class BankService extends BaseService
      * @return Bank[]
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function retrieveAll(AccessToken $token)
+    public function retrieveAll(AccessToken $token): array
     {
         $response = $this->get('banks', [
             RequestOptions::HEADERS => [
